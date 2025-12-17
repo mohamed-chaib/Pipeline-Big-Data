@@ -1,4 +1,14 @@
 services:
+    airflow-init:
+      image: apache/airflow:2.9.0-python3.9
+      environment:
+        AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres:5432/airflow
+        AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      depends_on:
+        - postgres
+      command: >
+        bash -c "airflow db migrate &&
+        airflow users create --username airflow --firstname Admin --lastname Admin --role Admin --email admin@example.com --password airflow"
   postgres:
     image: postgres:15
     container_name: postgres
